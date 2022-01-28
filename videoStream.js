@@ -18,6 +18,7 @@ VideoStream = function(options) {
   this.height = options.height
   this.wsPort = options.wsPort
   this.inputStreamStarted = false
+  this.logLevel = options.logLevel
   this.stream = undefined
   this.startMpeg1Stream()
   this.pipeStreamToSocketServer()
@@ -79,7 +80,12 @@ VideoStream.prototype.startMpeg1Stream = function() {
     }
   })
   this.mpeg1Muxer.on('ffmpegStderr', function(data) {
-    console.log('has---error')
+    if (this.logLevel === 1) return null;
+
+    if (this.logLevel === 2) {
+      console.log(data)  
+    }
+
     return global.process.stderr.write(data)
   })
   this.mpeg1Muxer.on('exitWithError', () => {
