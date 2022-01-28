@@ -79,11 +79,13 @@ VideoStream.prototype.startMpeg1Stream = function() {
       }
     }
   })
-  this.mpeg1Muxer.on('ffmpegStderr', function(data) {
+  this.mpeg1Muxer.on('ffmpegStderr', (data) => {
     if (this.logLevel === 1) return null;
 
     if (this.logLevel === 2) {
-      console.log(data)  
+      if (data.toString().indexOf('frame=') === 0) {
+        return null;
+      }
     }
 
     return global.process.stderr.write(data)
